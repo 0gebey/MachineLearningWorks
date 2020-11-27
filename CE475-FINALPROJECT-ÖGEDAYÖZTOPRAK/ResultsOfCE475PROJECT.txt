@@ -1,0 +1,86 @@
+Feature Ranking: [1 1 1 3 1 2]
+These are the columns of our data in the sorted version according to Recursive Feature Elimination.
+So I have decided to work with first four data which are; x1,x2,x3,x5 for the further applications.
+
+-- Linear Regression Results --
+Mean Absolute Error of the Data: 1340.360906754991
+Mean Squared Error of the Data: 2945270.485508838
+Root Mean Squared Error of the Data 1716.1790365544146
+CVA Score of the Data:  -0.4384833837007497
+Accuracy of the Process: 0.4537236083266323
+
+-- Polynomial Regression Results --
+Best degree was 2 with RMSE 1088.338840730501
+Mean Absolute Error of the Data: 667.5871548969192
+Mean Squared Error of the Data: 971258.4682821011
+Root Mean Squared Error of the Data: 985.5244635634882
+CVA score of the Data:  -1.0192529799766399
+Accuracy of the Process 0.8198550611749047
+
+-- Lasso Regression Results --
+Mean Absolute Error of the Data: 1340.3551902533507
+Mean Squared Error of the Data: 2945252.8663090966
+Root Mean Squared Error of the Data: 1716.1739032828511
+CVA Score of the Data:  0.3253173705806599
+Accuracy of the Data 0.4537268762617528
+
+-- Decision Tree Results --
+Mean Absolute Error of the Data: 573.8
+Mean Squared Error of the Data: 1225144.7
+Root Mean Squared Error of the Data: 1106.8625479254413
+CVA score of the Data:  0.718669602658833
+Accuracy of the Data: 0.7727653099140995
+
+-- Random Forest Regression Results --
+Mean Absolute Error of the Data:: 452.5285
+Mean Squared Error of the Data: 581217.902865
+Root Mean Squared of the Data: 762.376483677848
+CVA score of the Data: 0.3704998525137759
+Accuracy of the Data: 0.8921981460394799
+
+-- Ridge Regression Results --
+Mean Absolute Error of the Data: 1339.6382589418886
+Mean Squared Error of the Data: 2943315.055884157
+Root Mean Squared Error of the Data: 1715.6092375258875
+CVA Score of the Data:  -1.0172487898159361
+Accuracy of the Data 0.45408629319540683
+
+Predicted y values by using Random Forest Regression =
+Random Forest =  [3958.04 1450.28 4311.69 2132.22   67.21  102.45 1520.01 3355.25 9287.73
+ 5934.24   18.49  231.82 1987.86 1446.16  652.86 8868.93  -26.85  378.76
+  -13.89  154.72]
+
+-------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
