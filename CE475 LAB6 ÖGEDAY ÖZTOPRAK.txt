@@ -1,0 +1,66 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+dataset = pd.read_csv('Grand-slams-men-2013.csv', encoding='latin1')
+
+x = dataset['FSP.1']
+y = dataset['FSW.1']
+
+def cubic_reg(x, y, knots, color):
+    x_a = x.values
+    y_a = y.values
+
+    fix = x_a.argsort()
+    x_a = x_a[fix]
+    y_a = y_a[fix]
+
+    o = np.ones((239, 1))
+
+    xi = np.array([x_a]).transpose()
+    xi_2 = np.power(xi, 2)
+    xi_3 = np.power(xi, 3)
+
+    knotVertical = []
+    for knot in knots:
+        results = []
+        for x in np.nditer(xi):
+            result = x - knot
+            if (result < 0):
+                result = 0
+            results.append(result)
+        vertical = np.array([results]).transpose()
+        vertical3 = np.power(vertical, 3)
+        knotVertical.append(vertical3)
+
+    X = 0
+
+    if (len(knotVertical) == 1):
+        X = np.hstack((o, xi, xi_2, xi_3, knotVertical[0]))
+    elif (len(knotVertical) == 2):
+        X = np.hstack((o, xi, xi_2, xi_3, knotVertical[0], knotVertical[1]))
+    elif (len(knotVertical) == 3):
+        X = np.hstack((o, xi, xi_2, xi_3, knotVertical[0], knotVertical[1], knotVertical[2]))
+
+    X_t = X.transpose()
+    Ba = np.dot(X_t, X)
+    Bb = np.linalg.inv(Ba).dot(X_t)
+    B = np.dot(Bb, y_a)
+    reg = X.dot(B)
+    print(X.flatten())
+    plt.scatter(x_a, y_a, color="blue")
+    plt.title("Cubic Spine Regression")
+    plt.xlabel("First serve percentage of player 1")
+    plt.ylabel("First serve won by player 1")
+    plt.plot(x_a, reg, color=color)
+
+
+def main():
+    cubic_reg(x, y, [62], "black")
+    cubic_reg(x, y, [60, 75],"red") 
+    cubic_reg(x, y, [65, 55, 70], "green")
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()

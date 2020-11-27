@@ -1,0 +1,87 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Apr 15 23:10:47 2020
+
+@author: ogeda
+"""
+import numpy as np
+import pandas as pd
+
+data = pd.read_csv('teams_comb.csv', encoding="Latin-1")
+
+experience = np.array(data['Experience'])
+age = np.array(data['Age'])
+power= np.array(data['Power'])
+salary = np.array(data['Salary'])
+ones = np.ones(len(power), dtype=int)   
+matrix = np.vstack((ones, age, experience, power))
+   
+def calculateM0(input , y_pred):
+   
+    input = np.delete(matrix, [2,3,4], axis=1)  
+    result = input*np.mean(salary)
+    result = y_pred
+    print(result)
+    
+def r2(input, y_pred):
+    
+    RSS  = np.square( y_pred - input ).sum()
+    TSS  = np.square( input - input.mean() ).sum()
+    RSquared = 1 - RSS / TSS
+    print(RSquared)
+    
+def adjustedR2(matrix, y_pred, d, n):
+  
+    RSS  = np.square( y_pred - matrix ).sum()
+    d = 0
+    n = len(matrix)
+    TSS = np.square( matrix - matrix.mean() ).sum()
+    adjustedRSquared = 1 - (RSS/(n-d-1)) / (TSS(n-1))
+    print("First adjusted R^2 score: " , adjustedRSquared)
+
+     
+i = 2
+while i < 5:
+    deleted = np.delete(matrix, i, axis=1)
+    input = matrix - deleted
+    print(input)
+    
+    matrix2 = np.array([input, ones])
+    
+    m = np.linalg.solve(np.dot(input.T, input), np.dot(input.T, ones))
+    y_pred = np.dot(input, m)
+    
+    RSS  = np.square( y_pred - input ).sum()
+    TSS  = np.square( input - input.mean() ).sum()
+    RSquared = 1- RSS / TSS
+    RSquaredArr = []
+    RSquared = np.append(RSquared)
+    i += 1
+    
+biggestRSquared = RSquared[0];
+for i in range(0, len(RSquared)):
+         
+    if(RSquared[i] > biggestRSquared):
+        biggestSquared = RSquared[i];
+        if (i == 1):
+                input = np.delete(matrix, 2, axis=1)
+                m = np.linalg.solve(np.dot(input.T, input), np.dot(input.T, ones))
+                y_pred = np.dot(input, m)
+                print("Age has been shown to yield the best R^2 score.")
+        if (i == 2):
+                input = np.delete(matrix, 3, axis=1)
+                print("Experience has been shown to yield the best R^2 score.")
+                m = np.linalg.solve(np.dot(input.T, input), np.dot(input.T, ones))
+                y_pred = np.dot(input, m)
+        else:
+                input = np.delete(matrix, 4, axis=1)
+                print("Power has been shown to yield the best R^2 score.")
+                m = np.linalg.solve(np.dot(input.T, input), np.dot(input.T, ones))
+                y_pred = np.dot(input, m)
+                
+RSS  = np.square( y_pred - input ).sum()
+d = 1
+n = len(input)
+TSS = np.square( input - input.mean() ).sum()
+adjustedRSquared = 1 - (RSS/(n-d-1)) / (TSS(n-1))
+print("Second adjusted R^2 score: " , adjustedRSquared)

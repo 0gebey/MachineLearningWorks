@@ -1,0 +1,76 @@
+
+
+"""
+Created on Wed May  6 22:18:36 2020
+
+@author: ogeda
+"""
+import numpy as np
+import pandas as pd
+from sklearn import linear_model
+import warnings as wg
+import matplotlib.pyplot as plt
+    
+data = pd.read_csv('Grand-slams-men-2013-updated.csv', encoding='latin1')
+wg.filterwarnings("ignore")
+ace = np.array(data['ACE.1'])
+wnr = np.array(data['WNR.1'])
+bpw = np.array(data['BPW.1'])
+npw = np.array(data['NPW.1'])
+output = np.array(data['TPW.1'])
+x0 = np.ones(len(ace), dtype=int)
+
+matrix = np.array([x0, ace, wnr, bpw, npw]).T
+alpharr = np.arange(0,10.1,0.1)
+print(alpharr)
+
+predictArr = []
+squaresArr = []
+MSEarr = []
+tempMSEarr = []
+minMSE = 0
+sum = 0
+lasti = 0 
+for i in range(len(alpharr)):
+    
+    for row in matrix:
+        test_x = matrix[i*1:i*1+1]
+        print(test_x)
+        test_y = output[i*1:i*1+1]
+        print(test_y)
+        train_x = np.delete(matrix,i, 0)
+        print(train_x)
+        train_y = np.delete(output,i, 0)
+        print(train_y)
+        lasso = linear_model.Lasso(alpha=alpharr[i])
+        
+        lasso.fit(train_x, train_y)
+        
+        predict = lasso.predict(test_x)
+        
+        tempMSE = ((predict - test_y)**2)
+        
+        tempMSEarr.append(tempMSE)
+    sum = sum + MSEarr[i]
+    MSE = np.mean(tempMSEarr)
+    MSEarr.append(MSE)
+minMSE = np.min(MSEarr)
+ 
+lasti = np.argmin(MSEarr)*0.1
+print("The minimum MSE value is ", minMSE),
+print("Corresponding lambda value is ", lasti )
+
+lasso = linear_model.Lasso(alpha= lasti)
+lasso.fit(matrix,output)
+v=lasso.coef_
+print("The lasso coefficients with the optimal lambda value:", v)
+lasso = linear_model.Lasso(alpha= 0)
+lasso.fit(matrix,output)
+n=lasso.coef_
+
+print("The lasso coefficients with the optimal lambda value:", n)
+plt.plot(alpharr, MSEarr, color = "g") 
+plt.title('MSE Value Comparison')
+plt.xlabel('Lambda Values') 
+plt.ylabel('Mean Squared Error') 
+plt.show()         

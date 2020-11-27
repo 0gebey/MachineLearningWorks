@@ -1,0 +1,76 @@
+
+
+"""
+Created on Wed May  6 22:18:36 2020
+
+@author: ogeda
+"""
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
+import warnings as wg
+import matplotlib.pyplot as plt
+    
+data = pd.read_csv('Grand-slams-men-2013.csv', encoding='latin1')
+wg.filterwarnings("ignore")
+ace = np.array(data['ACE.1'])
+wnr = np.array(data['WNR.1'])
+dbf = np.array(data['DBF.1'])
+ufe = np.array(data['UFE.1'])
+bpc = np.array(data['BPC.1'])
+fsp = np.array(data['FSP.1'])
+npa = np.array(data['NPA.1'])
+st11 = np.array(data['ST1.1'])
+st21 = np.array(data['ST2.1'])
+st31 = np.array(data['ST3.1'])
+st41 = np.array(data['ST4.1'])
+st51 = np.array(data['ST5.1'])
+
+matrix = np.array([fsp, ace, dbf, wnr, ufe, bpc, npa]).T
+outputMatrix = np.array([st11, st21, st31, st41, st51]).T
+output=np.sum(outputMatrix, axis=0)
+trainingX = matrix[200:,:]
+testX = matrix[240 - 200:,:]
+forarr= np.arange(1,151,1)
+arr1 = []
+arr2 = []
+arr3 = []
+i = 1
+for i in range(len(forarr)):
+    reg = RandomForestRegressor(max_depth=7,n_estimators=i, max_features="auto")
+    reg.fit(trainingX, output)
+    predicted_y1 = reg.predict(testX)
+    tempMSE1 = ((output - predicted_y1)**2)
+    arr1.append(tempMSE1)
+    reg = RandomForestRegressor(max_depth=7,n_estimators=i, max_features="sqrt")
+    reg.fit(trainingX, output)
+    predicted_y2 = reg.predict(testX)
+    tempMSE2 = ((output - predicted_y2)**2)
+    arr2.append(tempMSE2)
+    reg = RandomForestRegressor(max_depth=7,n_estimators=i, max_features=4)
+    reg.fit(trainingX, output)
+    predicted_y3 = reg.predict(testX)
+    tempMSE3 = ((output - predicted_y3)**2)    
+    arr3.append(tempMSE3)
+ 
+reg = RandomForestRegressor(max_depth=7,n_estimators=150, max_features=4)
+y_pred_1 = reg.predict(testX)
+tempMSE4 = ((output - y_pred_1)**2)
+reg = RandomForestRegressor(max_depth=1,n_estimators=150, max_features=4)
+y_pred_2 = reg.predict(testX)
+tempMSE5 = ((output - y_pred_2)**2)
+
+plotarr = np.arange(1,100,1)
+plt.style.use('classic')
+plt.plot(plotarr, arr1, color = "g" , label = 'Features=Auto')
+plt.plot(plotarr, arr2, color = "r" , label = 'Features=Sqrt') 
+plt.plot(plotarr, arr3, color = "w" , label = 'Features=4') 
+plt.xlabel('Number of Estimators(Decision Trees)') 
+plt.ylabel('R^2 Score')
+plt.legend()
+plt.show()      
+
+plt.scatter(y_pred_1, tempMSE4, color="blue")
+plt.scatter(y_pred_2, tempMSE5, color="red")    
+plt.xlabel('Estimation') 
+plt.ylabel('Error of Estimation') 
